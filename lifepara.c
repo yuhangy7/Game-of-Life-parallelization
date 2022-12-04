@@ -25,6 +25,7 @@ parallel_game_of_life (char* outboard,
         const int nrows,
         const int ncols,
         const int gens_max,
+        const int version,
         const int num_threads)
 {
     /* HINT: in the parallel decomposition, LDA may not be equal to
@@ -34,38 +35,71 @@ parallel_game_of_life (char* outboard,
     omp_set_dynamic(0);
     omp_set_num_threads(num_threads);
     //printf("number of threads, %d\n",num_threads);
-    
+    printf("current version is: %d\n", version);
+    if (version == 1) {
     for (curgen = 0; curgen < gens_max; curgen++)
-    {
-        /* HINT: you'll be parallelizing these loop(s) by doing a
-           geometric decomposition of the output */
-        #pragma omp parallel for 
-        for (i = 0; i < nrows; i++)
-        {   //printf("number of threads, %d\n",omp_get_num_threads());
-            for (j = 0; j < ncols; j++)
-            {
-                const int inorth = mod (i-1, nrows);
-                const int isouth = mod (i+1, nrows);
-                const int jwest = mod (j-1, ncols);
-                const int jeast = mod (j+1, ncols);
+        {
+            /* HINT: you'll be parallelizing these loop(s) by doing a
+            geometric decomposition of the output */
+            #pragma omp parallel for
+            for (i = 0; i < nrows; i++)
+            {   //printf("number of threads, %d\n",omp_get_num_threads());
+                for (j = 0; j < ncols; j++)
+                {
+                    const int inorth = mod (i-1, nrows);
+                    const int isouth = mod (i+1, nrows);
+                    const int jwest = mod (j-1, ncols);
+                    const int jeast = mod (j+1, ncols);
 
-                const char neighbor_count = 
-                    BOARD (inboard, inorth, jwest) + 
-                    BOARD (inboard, inorth, j) + 
-                    BOARD (inboard, inorth, jeast) + 
-                    BOARD (inboard, i, jwest) +
-                    BOARD (inboard, i, jeast) + 
-                    BOARD (inboard, isouth, jwest) +
-                    BOARD (inboard, isouth, j) + 
-                    BOARD (inboard, isouth, jeast);
+                    const char neighbor_count = 
+                        BOARD (inboard, inorth, jwest) + 
+                        BOARD (inboard, inorth, j) + 
+                        BOARD (inboard, inorth, jeast) + 
+                        BOARD (inboard, i, jwest) +
+                        BOARD (inboard, i, jeast) + 
+                        BOARD (inboard, isouth, jwest) +
+                        BOARD (inboard, isouth, j) + 
+                        BOARD (inboard, isouth, jeast);
 
-                BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
-
+                    BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
+                }
             }
-        }
-        SWAP_BOARDS( outboard, inboard );
+            SWAP_BOARDS( outboard, inboard );
 
+        }
+    } else if (version == 2){
+    for (curgen = 0; curgen < gens_max; curgen++)
+        {
+            /* HINT: you'll be parallelizing these loop(s) by doing a
+            geometric decomposition of the output */
+            for (i = 0; i < nrows; i++)
+            {   //printf("number of threads, %d\n",omp_get_num_threads());
+                #pragma omp parallel for
+                for (j = 0; j < ncols; j++)
+                {
+                    const int inorth = mod (i-1, nrows);
+                    const int isouth = mod (i+1, nrows);
+                    const int jwest = mod (j-1, ncols);
+                    const int jeast = mod (j+1, ncols);
+
+                    const char neighbor_count = 
+                        BOARD (inboard, inorth, jwest) + 
+                        BOARD (inboard, inorth, j) + 
+                        BOARD (inboard, inorth, jeast) + 
+                        BOARD (inboard, i, jwest) +
+                        BOARD (inboard, i, jeast) + 
+                        BOARD (inboard, isouth, jwest) +
+                        BOARD (inboard, isouth, j) + 
+                        BOARD (inboard, isouth, jeast);
+
+                    BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
+
+                }
+            }
+            SWAP_BOARDS( outboard, inboard );
+        }
     }
+    
     /* 
      * We return the output board, so that we know which one contains
      * the final result (because we've been swapping boards around).

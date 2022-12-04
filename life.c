@@ -31,9 +31,9 @@ game_of_life (char* outboard,
 		return sequential_game_of_life (outboard, inboard, nrows, ncols, gens_max);
 	} else if (version == OPENMP_DEVIDE_BY_ROW) {
 		printf("para row");
-		return parallel_game_of_life(outboard, inboard, nrows, ncols, gens_max, num_threads);
+		return parallel_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads);
 	} else if (version == OPENMP_DEVIDE_BY_COL) {
 		printf("para col");
-		return parallel_game_of_life(outboard, inboard, nrows, ncols, gens_max, num_threads);
+		return parallel_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads);
 	}
 }
