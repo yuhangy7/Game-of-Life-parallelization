@@ -14,7 +14,8 @@ game_of_life (char* outboard,
 	      const int nrows,
 	      const int ncols,
 	      const int gens_max,
-		  const int version);
+		  const int version,
+		  const int num_threads);
 
 /**
  * Same output as game_of_life() above, except this is not
@@ -32,5 +33,6 @@ parallel_game_of_life (char* outboard,
         char* inboard,
         const int nrows,
         const int ncols,
-        const int gens_max);
+        const int gens_max,
+		const int num_threads);
 #endif /* _life_h */

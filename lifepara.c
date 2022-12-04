@@ -4,6 +4,7 @@
  ****************************************************************************/
 #include "life.h"
 #include "util.h"
+#include <stdio.h>
 
 /**
  * Swapping the two boards only involves swapping pointers, not
@@ -23,20 +24,24 @@ parallel_game_of_life (char* outboard,
         char* inboard,
         const int nrows,
         const int ncols,
-        const int gens_max)
+        const int gens_max,
+        const int num_threads)
 {
     /* HINT: in the parallel decomposition, LDA may not be equal to
        nrows! */
     const int LDA = nrows;
     int curgen, i, j;
-
+    omp_set_dynamic(0);
+    omp_set_num_threads(num_threads);
+    //printf("number of threads, %d\n",num_threads);
+    
     for (curgen = 0; curgen < gens_max; curgen++)
     {
         /* HINT: you'll be parallelizing these loop(s) by doing a
            geometric decomposition of the output */
         #pragma omp parallel for 
         for (i = 0; i < nrows; i++)
-        {
+        {   //printf("number of threads, %d\n",omp_get_num_threads());
             for (j = 0; j < ncols; j++)
             {
                 const int inorth = mod (i-1, nrows);
