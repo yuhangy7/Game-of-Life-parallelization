@@ -91,7 +91,7 @@ main (int argc, char* argv[])
       print_usage (argv[0]);
       exit (EXIT_FAILURE);
     }
-  
+
   err = to_int (&gens_max, argv[1]);
   if (err != 0)
     {
@@ -142,7 +142,7 @@ main (int argc, char* argv[])
    * Evolve board gens_max ticks, and time the evolution.  You will
    * parallelize the game_of_life() function for this assignment.
    */
-  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max);
+  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max, 0);
 
   /* Print (or save, depending on command-line argument <outfilename>)
      the final board */

@@ -17,7 +17,12 @@ game_of_life (char* outboard,
 	      char* inboard,
 	      const int nrows,
 	      const int ncols,
-	      const int gens_max)
+	      const int gens_max,
+		  const int version)
 {
-  return sequential_game_of_life (outboard, inboard, nrows, ncols, gens_max);
+	if (version == 0) {
+		return sequential_game_of_life (outboard, inboard, nrows, ncols, gens_max);
+	} else if (version == 1) {
+		return parallel_game_of_life(outboard, inboard, nrows, ncols, gens_max);
+	}
 }
