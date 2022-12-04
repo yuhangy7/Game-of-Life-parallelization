@@ -5,7 +5,7 @@
 #include "life.h"
 #include "util.h"
 #include <stdio.h>
-
+#include <omp.h>
 /**
  * Swapping the two boards only involves swapping pointers, not
  * copying values.
