@@ -84,16 +84,9 @@ main (int argc, char* argv[])
   FILE* input = NULL;
   FILE* output = NULL;
   int err = 0;
-  printf("optind is : %d\n", optind);
+  
   /* Parse command-line arguments */
-  // if (argc < argc_min || argc > argc_max)
-  //   {
-  //     fprintf (stderr, "*** Wrong number of command-line arguments; "
-	//        "got %d, need at least %d and no more than %d ***\n", 
-	//        argc - 1, argc_min - 1, argc_max - 1);
-  //     print_usage (argv[0]);
-  //     exit (EXIT_FAILURE);
-  //   }
+
   int opt;
   int calculation_type = 0;
   int num_threads = 4;
@@ -109,6 +102,15 @@ main (int argc, char* argv[])
         fprintf(stderr, "Usage: %s [-v:n:] [file...]\n", argv[0]);
         exit(EXIT_FAILURE);
     }
+  }
+  printf("optind is : %d\n", optind);
+  if (argc - optind + 1 < argc_min || argc - optind + 1 > argc_max)
+  {
+    fprintf (stderr, "*** Wrong number of command-line arguments; "
+        "got %d, need at least %d and no more than %d ***\n", 
+        argc - optind + 1, argc_min - 1, argc_max - 1);
+    print_usage (argv[0]);
+    exit (EXIT_FAILURE);
   }
 
   err = to_int (&gens_max, argv[optind]);
@@ -131,7 +133,7 @@ main (int argc, char* argv[])
       exit (EXIT_FAILURE);
     }
 
-  if (argc < argc_max || 0 == strcmp (argv[optind + 2], "-"))
+  if (argc - optind + 1 < argc_max || 0 == strcmp (argv[optind + 2], "-"))
     output = stdout;
   else
     {
