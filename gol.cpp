@@ -13,7 +13,7 @@
 #ifdef VERIFY_FLAG
 #define DO_VERIFY 1
 #else // VERIFY_FLAG
-#define DO_VERIFY 1
+#define DO_VERIFY 0
 #endif // VERIFY_FLAG
 
 

@@ -64,16 +64,17 @@ __global__ void GPUInnerLoop(char *outboard, char *inboard, int nrows, int ncols
    * Assigned cells of different threads does not overlape with
    * each other. And so no need for synchronization.
    */
-  for (int i = 0; i < nrows; i += 1)
+  //printf("thread Idx x y z is:\t%d\t%d\t%d\n", threadIdx.x, threadIdx.y, threadIdx.z);
+  //printf("block dimision x y z is:%d\t%d\t%d\n", blockDim.x, blockDim.y, blockDim.z);
+  for (int i = threadIdx.x; i < nrows; i += blockDim.x)
   {
-    for (int j = 0; j < ncols; j+= 1)
+    for (int j = threadIdx.y; j < ncols; j+= blockDim.x)
     {
       
         //revise mod and alivep
                 const int LDA = nrows;
                 
                 const int inorth = d_mod (i-1, nrows);
-                //printf("-------------------\n");
                 const int isouth = d_mod (i+1, nrows);
                 const int jwest = d_mod (j-1, ncols);
                 const int jeast = d_mod (j+1, ncols);
@@ -87,7 +88,6 @@ __global__ void GPUInnerLoop(char *outboard, char *inboard, int nrows, int ncols
                     BOARD (inboard, isouth, jwest) +
                     BOARD (inboard, isouth, j) + 
                     BOARD (inboard, isouth, jeast);
-                //printf("aaaaaa\n");  
                 //printf("%c\n", d_alivep (neighbor_count, BOARD (inboard, i, j)));
                 BOARD(outboard, i, j) = d_alivep (neighbor_count, BOARD (inboard, i, j));
 
@@ -131,7 +131,7 @@ char* cuda_game_of_life (
             cudaMalloc((void**)&d_outboard, sizeof(char) * nrows * ncols);
             // cudaMalloc(&d_checkboard, sizeof(char) * nrows * ncols);
             cudaMemcpy(d_inboard, inboard, sizeof(char) * nrows * ncols, cudaMemcpyHostToDevice);
-            GPUInnerLoop<<<1, 1>>>(d_outboard, d_inboard, nrows, ncols);
+            GPUInnerLoop<<<dim3(1,1,1), dim3(32, 32,1)>>>(d_outboard, d_inboard, nrows, ncols);
             cudaDeviceSynchronize();
             cudaMemcpy(outboard, d_outboard, sizeof(char) * nrows * ncols, cudaMemcpyDeviceToHost);
             SWAP_BOARDS( outboard, inboard );
