@@ -1,6 +1,15 @@
 
 [111214]
 
+*** Command ***
+./gol 100 inputs/1k.pbm outputs/1k.pbm -v1 -n4
+
+100 means number of generations
+inputs/1k.pbm 输入路径
+outputs/1k.pbm 输出路径
+-v version   0 is sequential, 1 is openmp row, 2 is openmp col, 3 is cuda
+-n number threads
+
 - initboard may appear to hang from time to time. This is because it tries to
   get a good random seed by reading from /dev/random, which may take a long
   time due to the lack of random information accumulated in the system (e.g.,
