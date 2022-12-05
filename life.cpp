@@ -15,7 +15,8 @@
 #define SEQUENTIAL 0
 #define OPENMP_DEVIDE_BY_ROW 1
 #define OPENMP_DEVIDE_BY_COL 2
-#define CUDA 3
+#define CUDA_V1 3
+#define CUDA_V2 4
 
 
 char*
@@ -37,8 +38,11 @@ game_of_life (char* outboard,
 	} else if (version == OPENMP_DEVIDE_BY_COL) {
 		printf("para col");
 		return parallel_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads);
-	} else if (version == CUDA) {
-		printf("cuda version\n");
-		return cuda_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
+	} else if (version == CUDA_V1) {
+		printf("cuda_v1 version\n");
+		return cuda_v1_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
+	} else if (version == CUDA_V2) {
+		printf("cuda_v2 version\n");
+		return cuda_v2_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
 	}
 }

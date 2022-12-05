@@ -32,18 +32,18 @@
 //                     BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
 // }
 
-__device__ int d_mod (int x, int m)
+__device__ int d_mod_v2 (int x, int m)
 {
   return (x < 0) ? ((x % m) + m) : (x % m);
 }
 
-__device__ char d_alivep (char count, char state)
+__device__ char d_alivep_v2 (char count, char state)
 {
   return (! state && (count == (char) 3)) ||
     (state && (count >= 2) && (count <= 3));
 }
 
-__global__ void GPUInnerLoop(char *outboard, char *inboard, int nrows, int ncols) 
+__global__ void GPUInnerLoop_v2(char *outboard, char *inboard, int nrows, int ncols) 
 {
    //calculates unique thread ID in the block
   //  int t= (blockDim.x*blockDim.y)*threadIdx.z+    (threadIdx.y*blockDim.x)+(threadIdx.x); 
@@ -74,10 +74,10 @@ __global__ void GPUInnerLoop(char *outboard, char *inboard, int nrows, int ncols
         //revise mod and alivep
                 const int LDA = nrows;
                 
-                const int inorth = d_mod (i-1, nrows);
-                const int isouth = d_mod (i+1, nrows);
-                const int jwest = d_mod (j-1, ncols);
-                const int jeast = d_mod (j+1, ncols);
+                const int inorth = d_mod_v2 (i-1, nrows);
+                const int isouth = d_mod_v2 (i+1, nrows);
+                const int jwest = d_mod_v2 (j-1, ncols);
+                const int jeast = d_mod_v2 (j+1, ncols);
 
                 const char neighbor_count = 
                     BOARD (inboard, inorth, jwest) + 
@@ -89,14 +89,14 @@ __global__ void GPUInnerLoop(char *outboard, char *inboard, int nrows, int ncols
                     BOARD (inboard, isouth, j) + 
                     BOARD (inboard, isouth, jeast);
                 //printf("%c\n", d_alivep (neighbor_count, BOARD (inboard, i, j)));
-                BOARD(outboard, i, j) = d_alivep (neighbor_count, BOARD (inboard, i, j));
+                BOARD(outboard, i, j) = d_alivep_v2 (neighbor_count, BOARD (inboard, i, j));
 
     }
   }
 }
 
 
-char* cuda_v1_game_of_life (
+char* cuda_v2_game_of_life (
     char* outboard, 
     char* inboard,
     const int nrows,
@@ -109,41 +109,18 @@ char* cuda_v1_game_of_life (
     const int LDA = nrows;
     int curgen, i, j;
     printf("current version is: %d\n", version);
-    
+    char * d_inboard;
+    char * d_outboard;
+    cudaMalloc((void**)&d_inboard, sizeof(char) * nrows * ncols);
+    cudaMalloc((void**)&d_outboard, sizeof(char) * nrows * ncols);
+    cudaMemcpy(d_inboard, inboard, sizeof(char) * nrows * ncols, cudaMemcpyHostToDevice);
     for (curgen = 0; curgen < gens_max; curgen++)
     {
-            /* HINT: you'll be parallelizing these loop(s) by doing a
-            geometric decomposition of the output */
-            
-            // for (i = 0; i < nrows; i++)
-            // {   //printf("number of threads, %d\n",omp_get_num_threads());
-            //     for (j = 0; j < ncols; j++)
-            //     {   char isalive;
-            //         char *isalivePtr = &isalive;
-            //         check<<<1, 1>>>(isalivePtr, outboard, inboard, nrows, ncols, i, j, &mod, &alivep);
-            //         BOARD(outboard, i, j) = *isalivePtr;
-            //     }
-            // }
-            char * d_inboard;
-            char * d_outboard;
-            //char * d_checkboard;
-            cudaMalloc((void**)&d_inboard, sizeof(char) * nrows * ncols);
-            cudaMalloc((void**)&d_outboard, sizeof(char) * nrows * ncols);
-            // cudaMalloc(&d_checkboard, sizeof(char) * nrows * ncols);
-            cudaMemcpy(d_inboard, inboard, sizeof(char) * nrows * ncols, cudaMemcpyHostToDevice);
-            GPUInnerLoop<<<dim3(1,1,1), dim3(32, 32,1)>>>(d_outboard, d_inboard, nrows, ncols);
-            cudaDeviceSynchronize();
-            cudaMemcpy(outboard, d_outboard, sizeof(char) * nrows * ncols, cudaMemcpyDeviceToHost);
-            SWAP_BOARDS( outboard, inboard );
-
-
-
-            
-            // char* final_board = cuda_game_of_life<<<1,512>>> (outboard, inboard, nrows, ncols, gens_max);
-            
-            // return final_board;
+        GPUInnerLoop_v2<<<dim3(1,1,1), dim3(32, 32,1)>>>(d_outboard, d_inboard, nrows, ncols);
+        cudaDeviceSynchronize();
+        SWAP_BOARDS( d_outboard, d_inboard );
     }
-    
+    cudaMemcpy(inboard, d_inboard, sizeof(char) * nrows * ncols, cudaMemcpyDeviceToHost);
     
  
     
