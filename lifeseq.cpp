@@ -5,6 +5,7 @@
  ****************************************************************************/
 #include "life.h"
 #include "util.h"
+#include <stdio.h>
 
 /**
  * Swapping the two boards only involves swapping pointers, not
@@ -30,7 +31,6 @@ sequential_game_of_life (char* outboard,
        nrows! */
     const int LDA = nrows;
     int curgen, i, j;
-
     for (curgen = 0; curgen < gens_max; curgen++)
     {
         /* HINT: you'll be parallelizing these loop(s) by doing a

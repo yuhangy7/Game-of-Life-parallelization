@@ -38,6 +38,7 @@ game_of_life (char* outboard,
 		printf("para col");
 		return parallel_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads);
 	} else if (version == CUDA) {
+		printf("cuda version\n");
 		return cuda_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
 	}
 }
