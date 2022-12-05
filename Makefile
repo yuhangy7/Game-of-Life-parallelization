@@ -2,7 +2,7 @@
 # Include platform-dependent settings, and definitions.
 #
 include Makefile.include
-CFLAGS += -fopenmp
+
 LDFLAGS += -lm -pthread
 CPPFLAGS += "-DCOMPILER=\"$(CC)\"" "-DFLAGS=\"$(COPTFLAGS)\""
 
@@ -19,9 +19,8 @@ endif
 
 GOL_EXE = gol
 GOL_VERIFY_EXE = gol_verify
-GOL_OBJS = gol.o life.o lifeseq.o lifepara.o load.o save.o 
-CUDA_OBJS = vector_add.o
-GOL_VERIFY_OBJS = gol.verify.o life.o lifeseq.o lifepara.o load.o save.o 
+GOL_OBJS = gol.o life.o lifeseq.o load.o save.o 
+GOL_VERIFY_OBJS = gol.verify.o life.o lifeseq.o load.o save.o 
 BITBOARD_EXE = initboard
 BITBOARD_OBJS = bitboard.o random_bit.o
 EXES = $(GOL_EXE) $(BITBOARD_EXE)
@@ -30,41 +29,35 @@ OBJS = $(GOL_OBJS) $(BITBOARD_OBJS)
 
 all: $(GOL_EXE) $(BITBOARD_EXE)
 
-$(GOL_EXE): $(GOL_OBJS) $(CUDA_OBJS)
-	$(CXX) $(CFLAGS) $(LDFLAGS) $(GOL_OBJS) -o $@ 
+$(GOL_EXE): $(GOL_OBJS) 
+	$(LINKER) $(CFLAGS) $(LDFLAGS) $(GOL_OBJS) -o $@ 
 
 $(GOL_VERIFY_EXE): $(GOL_VERIFY_OBJS) 
-	$(CXX) $(CFLAGS) $(LDFLAGS) $(GOL_VERIFY_OBJS) -o $@ 
+	$(LINKER) $(CFLAGS) $(LDFLAGS) $(GOL_VERIFY_OBJS) -o $@ 
 
 $(BITBOARD_EXE): $(BITBOARD_OBJS)
-	$(CXX) $(CFLAGS) $(LDFLAGS) $(BITBOARD_OBJS) -o $@ 
+	$(LINKER) $(CFLAGS) $(LDFLAGS) $(BITBOARD_OBJS) -o $@ 
 
-%.o: %.cpp
-	$(CXX) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
-# %.o: %.cu
-# 	nvcc -c $< -o $@
+%.verify.o: %.c
+	$(CC) -c $(CFLAGS) -DVERIFY_FLAG $(CPPFLAGS) $< -o $@
 
-%.verify.o: %.cpp
-	$(CXX) -c $(CFLAGS) -DVERIFY_FLAG $(CPPFLAGS) $< -o $@
+lifeseq.o: lifeseq.c life.h util.h
 
-lifeseq.o: lifeseq.cpp life.h util.h
+life.o: life.c life.h util.h
 
-lifepara.o: lifepara.cpp life.h util.h
+load.o: load.c load.h
 
-life.o: life.cpp life.h util.h
+save.o: save.c save.h
 
-load.o: load.cpp load.h
+gol.o: gol.c life.h load.h save.h 
 
-save.o: save.cpp save.h
+bitboard.o: bitboard.c random_bit.h
 
-gol.o: gol.cpp life.h load.h save.h 
+random_bit.o: random_bit.c random_bit.h
 
-bitboard.o: bitboard.cpp random_bit.h
-
-random_bit.o: random_bit.cpp random_bit.h
-
-# vector_add.o: vector_add.cu
 
 clean:
 	rm -f $(GOL_OBJS) $(GOL_VERIFY_OBJS) $(GOL_EXE) $(GOL_VERIFY_EXE) $(BITBOARD_OBJS) $(BITBOARD_EXE) 

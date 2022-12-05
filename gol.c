@@ -3,9 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/time.h>
+
 #include "life.h"
 #include "load.h"
 #include "save.h"
@@ -69,7 +67,6 @@ main (int argc, char* argv[])
   /*
    * Set verifyp to 1 if you want to turn on verification.
    */
-  printf("number of argc: %d \n", argc);
   const int verifyp = DO_VERIFY;
   const int argc_min = 3;
   const int argc_max = 4;
@@ -84,64 +81,43 @@ main (int argc, char* argv[])
   FILE* input = NULL;
   FILE* output = NULL;
   int err = 0;
-  
+
   /* Parse command-line arguments */
-
-  int opt;
-  int calculation_type = 0;
-  int num_threads = 4;
-  while ((opt = getopt(argc, argv, "v:n:")) != -1) {
-    switch (opt) {
-      case 'v': calculation_type = atoi(optarg); 
-      printf("get v\n");
-      break;
-      case 'n': num_threads = atoi(optarg); 
-      printf("get n, n is %d\n", num_threads);
-      break;
-      default:
-        fprintf(stderr, "Usage: %s [-v:n:] [file...]\n", argv[0]);
-        exit(EXIT_FAILURE);
+  if (argc < argc_min || argc > argc_max)
+    {
+      fprintf (stderr, "*** Wrong number of command-line arguments; "
+	       "got %d, need at least %d and no more than %d ***\n", 
+	       argc - 1, argc_min - 1, argc_max - 1);
+      print_usage (argv[0]);
+      exit (EXIT_FAILURE);
     }
-  }
-  printf("optind is : %d\n", optind);
-  if (argc - optind + 1 < argc_min || argc - optind + 1 > argc_max)
-  {
-    fprintf (stderr, "*** Wrong number of command-line arguments; "
-        "got %d, need at least %d and no more than %d ***\n", 
-        argc - optind + 1, argc_min - 1, argc_max - 1);
-    print_usage (argv[0]);
-    exit (EXIT_FAILURE);
-  }
-
-  err = to_int (&gens_max, argv[optind]);
-  printf("gens_max is %d at index %d\n", gens_max, optind);
+  
+  err = to_int (&gens_max, argv[1]);
   if (err != 0)
     {
       fprintf (stderr, "*** <num_generations> argument \'%s\' "
-	       "must be a nonnegative integer! ***\n", argv[optind]);
+	       "must be a nonnegative integer! ***\n", argv[1]);
       print_usage (argv[0]);
       exit (EXIT_FAILURE);
     }
 
   /* Open input and output files */ 
-  printf("the inputs path is: %s\n", argv[optind + 1]);
-  input = fopen (argv[optind + 1], "r");
+  input = fopen (argv[2], "r");
   if (input == NULL)
     {
-      fprintf (stderr, "*** Failed to open input file \'%s\' for reading! ***\n", argv[optind + 1]);
+      fprintf (stderr, "*** Failed to open input file \'%s\' for reading! ***\n", argv[2]);
       print_usage (argv[0]);
       exit (EXIT_FAILURE);
     }
 
-  if (argc - optind + 1 < argc_max || 0 == strcmp (argv[optind + 2], "-"))
+  if (argc < argc_max || 0 == strcmp (argv[3], "-"))
     output = stdout;
   else
     {
-      printf("the outputs path is: %s\n", argv[optind + 2]);
-      output = fopen (argv[optind + 2], "w");
+      output = fopen (argv[3], "w");
       if (output == NULL)
 	{
-	  fprintf (stderr, "*** Failed to open output file \'%s\' for writing! ***\n", argv[optind + 2]);
+	  fprintf (stderr, "*** Failed to open output file \'%s\' for writing! ***\n", argv[3]);
 	  print_usage (argv[0]);
 	  exit (EXIT_FAILURE);
 	}
@@ -166,17 +142,7 @@ main (int argc, char* argv[])
    * Evolve board gens_max ticks, and time the evolution.  You will
    * parallelize the game_of_life() function for this assignment.
    */
-  struct timeval start, end;
-  gettimeofday(&start, NULL);
-
-  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max, calculation_type, num_threads);
-
-  gettimeofday(&end, NULL);
-  long seconds = (end.tv_sec - start.tv_sec);
-  long time_spent_in_um = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
-  double time_spent = (double)time_spent_in_um / 1000000;
-  printf("Time spent: %fs\n", time_spent);
-  
+  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max);
 
   /* Print (or save, depending on command-line argument <outfilename>)
      the final board */
