@@ -13,7 +13,7 @@
 #ifdef VERIFY_FLAG
 #define DO_VERIFY 1
 #else // VERIFY_FLAG
-#define DO_VERIFY 0
+#define DO_VERIFY 1
 #endif // VERIFY_FLAG
 
 
@@ -90,6 +90,7 @@ main (int argc, char* argv[])
   int opt;
   int calculation_type = 0;
   int num_threads = 4;
+  int num_blocks = 1;
   while ((opt = getopt(argc, argv, "v:n:")) != -1) {
     switch (opt) {
       case 'v': calculation_type = atoi(optarg); 
@@ -97,6 +98,7 @@ main (int argc, char* argv[])
       break;
       case 'n': num_threads = atoi(optarg); 
       printf("get n, n is %d\n", num_threads);
+      case 'b': num_blocks = atoi(optarg);
       break;
       default:
         fprintf(stderr, "Usage: %s [-v:n:] [file...]\n", argv[0]);
@@ -169,7 +171,7 @@ main (int argc, char* argv[])
   struct timeval start, end;
   gettimeofday(&start, NULL);
 
-  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max, calculation_type, num_threads);
+  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max, calculation_type, num_threads, num_blocks);
 
   gettimeofday(&end, NULL);
   long seconds = (end.tv_sec - start.tv_sec);

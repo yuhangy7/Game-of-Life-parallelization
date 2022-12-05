@@ -2,7 +2,7 @@
 # Include platform-dependent settings, and definitions.
 #
 include Makefile.include
-CFLAGS += -fopenmp
+CFLAGS += -fopenmp 
 LDFLAGS += -lm -pthread
 CPPFLAGS += "-DCOMPILER=\"$(CC)\"" "-DFLAGS=\"$(COPTFLAGS)\""
 
@@ -20,7 +20,7 @@ endif
 GOL_EXE = gol
 GOL_VERIFY_EXE = gol_verify
 GOL_OBJS = gol.o life.o lifeseq.o lifepara.o load.o save.o 
-CUDA_OBJS = vector_add.o
+CUDA_OBJS = lifecudapara.o
 GOL_VERIFY_OBJS = gol.verify.o life.o lifeseq.o lifepara.o load.o save.o 
 BITBOARD_EXE = initboard
 BITBOARD_OBJS = bitboard.o random_bit.o
@@ -31,7 +31,7 @@ OBJS = $(GOL_OBJS) $(BITBOARD_OBJS)
 all: $(GOL_EXE) $(BITBOARD_EXE)
 
 $(GOL_EXE): $(GOL_OBJS) $(CUDA_OBJS)
-	$(CXX) $(CFLAGS) $(LDFLAGS) $(GOL_OBJS) -o $@ 
+	$(CXX) $(CFLAGS) $(LDFLAGS) $(GOL_OBJS) $(CUDA_OBJS) -L/usr/local/cuda/lib64 -lcudart -o $@ 
 
 $(GOL_VERIFY_EXE): $(GOL_VERIFY_OBJS) 
 	$(CXX) $(CFLAGS) $(LDFLAGS) $(GOL_VERIFY_OBJS) -o $@ 
@@ -42,8 +42,8 @@ $(BITBOARD_EXE): $(BITBOARD_OBJS)
 %.o: %.cpp
 	$(CXX) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
-# %.o: %.cu
-# 	nvcc -c $< -o $@
+%.o: %.cu
+	nvcc -c $< -o $@
 
 %.verify.o: %.cpp
 	$(CXX) -c $(CFLAGS) -DVERIFY_FLAG $(CPPFLAGS) $< -o $@
@@ -64,7 +64,9 @@ bitboard.o: bitboard.cpp random_bit.h
 
 random_bit.o: random_bit.cpp random_bit.h
 
-# vector_add.o: vector_add.cu
+vector_add.o: vector_add.cu
+
+lifecudapara.o : lifecudapara.cu
 
 clean:
 	rm -f $(GOL_OBJS) $(GOL_VERIFY_OBJS) $(GOL_EXE) $(GOL_VERIFY_EXE) $(BITBOARD_OBJS) $(BITBOARD_EXE) 
