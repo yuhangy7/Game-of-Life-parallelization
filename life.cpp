@@ -17,6 +17,7 @@
 #define OPENMP_DEVIDE_BY_COL 2
 #define CUDA_V1 3
 #define CUDA_V2 4
+#define CUDA_V3 5
 
 
 char*
@@ -44,5 +45,8 @@ game_of_life (char* outboard,
 	} else if (version == CUDA_V2) {
 		printf("cuda_v2 version\n");
 		return cuda_v2_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
+	} else if (version == CUDA_V3) {
+		printf("cuda_v3 version\n");
+		return cuda_v3_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
 	}
 }

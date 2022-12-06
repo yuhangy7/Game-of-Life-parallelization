@@ -57,4 +57,14 @@ cuda_v2_game_of_life (char* outboard,
 		const int version,
 		const int num_threads,
 		const int num_blocks);
+
+char*
+cuda_v3_game_of_life (char* outboard, 
+        char* inboard,
+        const int nrows,
+        const int ncols,
+        const int gens_max,
+		const int version,
+		const int num_threads,
+		const int num_blocks);
 #endif /* _life_h */
