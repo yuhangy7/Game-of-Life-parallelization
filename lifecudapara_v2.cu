@@ -121,7 +121,8 @@ char* cuda_v2_game_of_life (
         SWAP_BOARDS( d_outboard, d_inboard );
     }
     cudaMemcpy(inboard, d_inboard, sizeof(char) * nrows * ncols, cudaMemcpyDeviceToHost);
-    
+    cudaFree(d_inboard);
+    cudaFree(d_outboard);
  
     
     /* 
