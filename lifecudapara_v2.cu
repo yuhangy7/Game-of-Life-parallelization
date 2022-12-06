@@ -117,7 +117,7 @@ char* cuda_v2_game_of_life (
     cudaMemcpy(d_inboard, inboard, sizeof(char) * nrows * ncols, cudaMemcpyHostToDevice);
     for (curgen = 0; curgen < gens_max; curgen++)
     {
-        GPUInnerLoop_v2<<<dim3(1,1,1), dim3(32, 32,1)>>>(d_outboard, d_inboard, nrows, ncols);
+        GPUInnerLoop_v2<<<dim3(1,1,1), dim3(num_threads_in_a_block_x, num_threads_in_a_block_y,1)>>>(d_outboard, d_inboard, nrows, ncols);
         cudaDeviceSynchronize();
         SWAP_BOARDS( d_outboard, d_inboard );
     }

@@ -118,7 +118,7 @@ char* cuda_v1_game_of_life (
             cudaMalloc((void**)&d_inboard, sizeof(char) * nrows * ncols);
             cudaMalloc((void**)&d_outboard, sizeof(char) * nrows * ncols);        
             cudaMemcpy(d_inboard, inboard, sizeof(char) * nrows * ncols, cudaMemcpyHostToDevice);
-            GPUInnerLoop<<<dim3(1, 1, 1), dim3(32, 32, 1)>>>(d_outboard, d_inboard, nrows, ncols);
+            GPUInnerLoop<<<dim3(1, 1, 1), dim3(num_threads_in_a_block_x, num_threads_in_a_block_y, 1)>>>(d_outboard, d_inboard, nrows, ncols);
             cudaDeviceSynchronize();
             cudaMemcpy(outboard, d_outboard, sizeof(char) * nrows * ncols, cudaMemcpyDeviceToHost);
             cudaFree(d_inboard);
