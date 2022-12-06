@@ -68,7 +68,7 @@ __global__ void GPUInnerLoop_v2(char *outboard, char *inboard, int nrows, int nc
   //printf("block dimision x y z is:%d\t%d\t%d\n", blockDim.x, blockDim.y, blockDim.z);
   for (int i = threadIdx.x; i < nrows; i += blockDim.x)
   {
-    for (int j = threadIdx.y; j < ncols; j+= blockDim.x)
+    for (int j = threadIdx.y; j < ncols; j+= blockDim.y)
     {
       
         //revise mod and alivep
