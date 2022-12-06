@@ -104,7 +104,8 @@ char* cuda_v2_game_of_life (
     const int gens_max,
     const int version,
     const int num_threads,
-    const int num_blocks) 
+    const int num_threads_in_a_block_x,
+    const int num_threads_in_a_block_y) 
 {
     const int LDA = nrows;
     int curgen, i, j;

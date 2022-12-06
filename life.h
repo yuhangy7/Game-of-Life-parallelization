@@ -16,7 +16,8 @@ game_of_life (char* outboard,
 	      const int gens_max,
 		  const int version,
 		  const int num_threads,
-		  const int num_blocks);
+		  const int num_threads_in_a_block_x,
+		  const int num_threads_in_a_block_y);
 
 /**
  * Same output as game_of_life() above, except this is not
@@ -46,7 +47,8 @@ cuda_v1_game_of_life (char* outboard,
         const int gens_max,
 		const int version,
 		const int num_threads,
-		const int num_blocks);
+		const int num_threads_in_a_block_x,
+		const int num_threads_in_a_block_y);
 
 char*
 cuda_v2_game_of_life (char* outboard, 
@@ -56,7 +58,8 @@ cuda_v2_game_of_life (char* outboard,
         const int gens_max,
 		const int version,
 		const int num_threads,
-		const int num_blocks);
+		const int num_threads_in_a_block_x,
+		const int num_threads_in_a_block_y);
 
 char*
 cuda_v3_game_of_life (char* outboard, 
@@ -66,5 +69,6 @@ cuda_v3_game_of_life (char* outboard,
         const int gens_max,
 		const int version,
 		const int num_threads,
-		const int num_blocks);
+		const int num_threads_in_a_block_x,
+		const int num_threads_in_a_block_y);
 #endif /* _life_h */

@@ -56,7 +56,8 @@ char* cuda_v3_game_of_life (
     const int gens_max,
     const int version,
     const int num_threads,
-    const int num_blocks) 
+    const int num_threads_in_a_block_x,
+    const int num_threads_in_a_block_y) 
 {
     const int LDA = nrows;
     int curgen, i, j;
@@ -66,8 +67,9 @@ char* cuda_v3_game_of_life (
     cudaMalloc((void**)&d_inboard, sizeof(char) * nrows * ncols);
     cudaMalloc((void**)&d_outboard, sizeof(char) * nrows * ncols);
     cudaMemcpy(d_inboard, inboard, sizeof(char) * nrows * ncols, cudaMemcpyHostToDevice);
-
-    dim3 threadsPerBlock(32, 32);
+    // printf("in gpu x: %d\n", num_threads_in_a_block_x);
+    // printf("in gpu y: %d\n", num_threads_in_a_block_y);
+    dim3 threadsPerBlock(num_threads_in_a_block_x, num_threads_in_a_block_y);
     dim3 numBlocks(nrows / threadsPerBlock.x + 1, ncols / threadsPerBlock.y + 1);
     for (curgen = 0; curgen < gens_max; curgen++)
     {

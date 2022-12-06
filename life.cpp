@@ -28,7 +28,8 @@ game_of_life (char* outboard,
 	      const int gens_max,
 		  const int version,
 		  const int num_threads,
-		  const int num_blocks)
+		  const int num_threads_in_a_block_x,
+		  const int num_threads_in_a_block_y)
 {
 	if (version == SEQUENTIAL) {
 		printf("seq");
@@ -41,12 +42,12 @@ game_of_life (char* outboard,
 		return parallel_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads);
 	} else if (version == CUDA_V1) {
 		printf("cuda_v1 version\n");
-		return cuda_v1_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
+		return cuda_v1_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_threads_in_a_block_x, num_threads_in_a_block_y);
 	} else if (version == CUDA_V2) {
 		printf("cuda_v2 version\n");
-		return cuda_v2_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
+		return cuda_v2_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_threads_in_a_block_x, num_threads_in_a_block_y);
 	} else if (version == CUDA_V3) {
 		printf("cuda_v3 version\n");
-		return cuda_v3_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_blocks);
+		return cuda_v3_game_of_life(outboard, inboard, nrows, ncols, gens_max, version, num_threads, num_threads_in_a_block_x, num_threads_in_a_block_y);
 	}
 }

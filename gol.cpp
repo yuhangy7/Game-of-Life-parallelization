@@ -91,18 +91,26 @@ main (int argc, char* argv[])
   int opt;
   int calculation_type = 0;
   int num_threads = 4;
-  int num_blocks = 1;
+  int num_threads_in_a_block_x = 16;
+  int num_threads_in_a_block_y = 16;
   char *time_output_path;
   bool has_time_output = false;
-  while ((opt = getopt(argc, argv, "v:n:t:")) != -1) {
+  while ((opt = getopt(argc, argv, "v:n:t:x:y:")) != -1) {
     switch (opt) {
       case 'v': calculation_type = atoi(optarg); 
       printf("get v\n");
       break;
       case 'n': num_threads = atoi(optarg); 
       printf("get n, n is %d\n", num_threads);
-      case 'b': num_blocks = atoi(optarg);
+      
+      case 'x': num_threads_in_a_block_x = atoi(optarg);
+      printf("get x, x is %d\n", num_threads_in_a_block_x);
       break;
+
+      case 'y': num_threads_in_a_block_y = atoi(optarg);
+      printf("get y, y is %d\n", num_threads_in_a_block_y);
+      break;
+
       case 't': time_output_path = optarg;
       printf("get t, t is %s", time_output_path);
       has_time_output=true;
@@ -178,7 +186,7 @@ main (int argc, char* argv[])
   struct timeval start, end;
   gettimeofday(&start, NULL);
 
-  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max, calculation_type, num_threads, num_blocks);
+  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max, calculation_type, num_threads, num_threads_in_a_block_x, num_threads_in_a_block_y);
 
   gettimeofday(&end, NULL);
   long seconds = (end.tv_sec - start.tv_sec);
