@@ -52,58 +52,58 @@ done
 #matrix size 
 #run sequential 
 num=32
-until [$num -gt 1000]
+until [ $num -gt 1000 ]
 do
-./gol 1000 inputs/"$num".pbm outputs/1k.pbm -v0 -t output2s.txt
-num = num * 2
+./gol 1000 inputs/"$num".pbm outputs/"$num".pbm -v0 -t output2s.txt
+num=$((num * 2))
 done
-for num in{1..10}
+for num in {1..10}
 do
-./gol 1000 inputs/"$num"k.pbm outputs/1k.pbm -v0 -t output2s.txt
+./gol 1000 inputs/"$num"k.pbm outputs/"$num"k.pbm -v0 -t output2s.txt
 done
 #openmp horinzontal
 num=32
-until [$num -gt 1000]
+until [ $num -gt 1000 ]
 do
-./gol 1000 inputs/"$num".pbm outputs/1k.pbm -v1 -t output2oh.txt
-num = num * 2
+./gol 1000 inputs/"$num".pbm outputs/"$num".pbm -v1 -t output2oh.txt
+num=$((num * 2))
 done
-for num in{1..10}
+for num in {1..10}
 do
-./gol 1000 inputs/"$num"k.pbm outputs/1k.pbm -v1 -t output2oh.txt
+./gol 1000 inputs/"$num"k.pbm outputs/"$num"k.pbm -v1 -t output2soh.txt
 done
 #openmp vertical
 num=32
-until [$num -gt 1000]
+until [ $num -gt 1000 ]
 do
-./gol 1000 inputs/"$num".pbm outputs/1k.pbm -v2 -t output2ov.txt
-num = num * 2
+./gol 1000 inputs/"$num".pbm outputs/"$num".pbm -v2 -t output2ov.txt
+num=$((num * 2))
 done
-for num in{1..10}
+for num in {1..10}
 do
-./gol 1000 inputs/"$num"k.pbm outputs/1k.pbm -v2 -t output2ov.txt
+./gol 1000 inputs/"$num"k.pbm outputs/"$num"k.pbm -v2 -t output2ov.txt
 done
 #cuda 1
 num=32
-until [$num -gt 1000]
+until [ $num -gt 1000 ]
 do
-./gol 1000 inputs/"$num".pbm outputs/1k.pbm -v3 -t output2c1.txt
-num = num * 2
+./gol 1000 inputs/"$num".pbm outputs/"$num".pbm -v3 -t output2c1.txt
+num=$((num * 2))
 done
-for num in{1..10}
+for num in {1..10}
 do
-./gol 1000 inputs/"$num"k.pbm outputs/1k.pbm -v3 -t output2c1.txt
+./gol 1000 inputs/"$num"k.pbm outputs/"$num"k.pbm -v3 -t output2c1.txt
 done
 #cuda 2
 num=32
-until [$num -gt 1000]
+until [ $num -gt 1000 ]
 do
-./gol 1000 inputs/"$num".pbm outputs/1k.pbm -v4 -t output2c2.txt
-num = num * 2
+./gol 1000 inputs/"$num".pbm outputs/"$num".pbm -v4 -t output2c2.txt
+num=$((num * 2))
 done
-for num in{1..10}
+for num in {1..10}
 do
-./gol 1000 inputs/"$num"k.pbm outputs/1k.pbm -v4 -t output2c2.txt
+./gol 1000 inputs/"$num"k.pbm outputs/"$num"k.pbm -v4 -t output2c3.txt
 done
 
 #openmp number of thread
