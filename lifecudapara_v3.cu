@@ -67,7 +67,7 @@ char* cuda_v3_game_of_life (
     cudaMalloc((void**)&d_outboard, sizeof(char) * nrows * ncols);
     cudaMemcpy(d_inboard, inboard, sizeof(char) * nrows * ncols, cudaMemcpyHostToDevice);
 
-    dim3 threadsPerBlock(16, 16);
+    dim3 threadsPerBlock(32, 32);
     dim3 numBlocks(nrows / threadsPerBlock.x + 1, ncols / threadsPerBlock.y + 1);
     for (curgen = 0; curgen < gens_max; curgen++)
     {

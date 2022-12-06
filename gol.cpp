@@ -9,11 +9,12 @@
 #include "life.h"
 #include "load.h"
 #include "save.h"
-
+#include <fstream>
+#include <iostream>
 #ifdef VERIFY_FLAG
 #define DO_VERIFY 1
 #else // VERIFY_FLAG
-#define DO_VERIFY 1
+#define DO_VERIFY 0
 #endif // VERIFY_FLAG
 
 
@@ -91,7 +92,9 @@ main (int argc, char* argv[])
   int calculation_type = 0;
   int num_threads = 4;
   int num_blocks = 1;
-  while ((opt = getopt(argc, argv, "v:n:")) != -1) {
+  char *time_output_path;
+  bool has_time_output = false;
+  while ((opt = getopt(argc, argv, "v:n:t:")) != -1) {
     switch (opt) {
       case 'v': calculation_type = atoi(optarg); 
       printf("get v\n");
@@ -99,6 +102,10 @@ main (int argc, char* argv[])
       case 'n': num_threads = atoi(optarg); 
       printf("get n, n is %d\n", num_threads);
       case 'b': num_blocks = atoi(optarg);
+      break;
+      case 't': time_output_path = optarg;
+      printf("get t, t is %s", time_output_path);
+      has_time_output=true;
       break;
       default:
         fprintf(stderr, "Usage: %s [-v:n:] [file...]\n", argv[0]);
@@ -178,7 +185,15 @@ main (int argc, char* argv[])
   long time_spent_in_um = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
   double time_spent = (double)time_spent_in_um / 1000000;
   printf("Time spent: %fs\n", time_spent);
-  
+  if (has_time_output) {
+    std::string filePath = "time_outputs/" + std::string(time_output_path);
+    std::cout << "Writing to " << filePath << std::endl;
+    std::ofstream myfile;
+    myfile.open(filePath, std::ios::app);
+    myfile << time_spent << std::endl;
+    myfile.close();
+  }
+
 
   /* Print (or save, depending on command-line argument <outfilename>)
      the final board */
