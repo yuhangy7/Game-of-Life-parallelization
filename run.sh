@@ -70,7 +70,7 @@ num=$((num * 2))
 done
 for num in {1..10}
 do
-./gol 1000 inputs/"$num"k.pbm outputs/"$num"k.pbm -v1 -t output2soh.txt
+./gol 1000 inputs/"$num"k.pbm outputs/"$num"k.pbm -v1 -t output2oh.txt
 done
 #openmp vertical
 num=32
@@ -115,5 +115,5 @@ done
 #openmp vertical
 for num in {1..16}
 do 
-./gol 1000 inputs/1k.pbm outputs/1k.pbm -v1 -n"$num" -t output3v.txt
+./gol 1000 inputs/1k.pbm outputs/1k.pbm -v2 -n"$num" -t output3v.txt
 done
