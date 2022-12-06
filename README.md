@@ -1,13 +1,17 @@
 
-[111214]
+# Parallelzation of Game of Life
 
-*** Command ***
+# Command 
 ./gol 100 inputs/1k.pbm outputs/1k.pbm -v1 -n4
 
 100 means number of generations
-inputs/1k.pbm 输入路径
-outputs/1k.pbm 输出路径
+
+inputs/1k.pbm input path
+
+outputs/1k.pbm output path
+
 -v version   0 is sequential, 1 is openmp row, 2 is openmp col, 3 is cuda
+
 -n number threads
 
 - initboard may appear to hang from time to time. This is because it tries to
