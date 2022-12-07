@@ -9,7 +9,8 @@
 #include "life.h"
 #include "load.h"
 #include "save.h"
-
+#include <fstream>
+#include <iostream>
 #ifdef VERIFY_FLAG
 #define DO_VERIFY 1
 #else // VERIFY_FLAG
@@ -90,16 +91,35 @@ main (int argc, char* argv[])
   int opt;
   int calculation_type = 0;
   int num_threads = 4;
-  int num_blocks = 1;
-  while ((opt = getopt(argc, argv, "v:n:")) != -1) {
+  int num_threads_in_a_block_x = 16;
+  int num_threads_in_a_block_y = 16;
+  char *time_output_path;
+  bool has_time_output = false;
+  int plot_type = 0;
+  while ((opt = getopt(argc, argv, "v:n:t:x:y:p:")) != -1) {
     switch (opt) {
       case 'v': calculation_type = atoi(optarg); 
-      printf("get v\n");
       break;
       case 'n': num_threads = atoi(optarg); 
       printf("get n, n is %d\n", num_threads);
-      case 'b': num_blocks = atoi(optarg);
+      
+      case 'x': num_threads_in_a_block_x = atoi(optarg);
+      printf("get x, x is %d\n", num_threads_in_a_block_x);
       break;
+
+      case 'y': num_threads_in_a_block_y = atoi(optarg);
+      printf("get y, y is %d\n", num_threads_in_a_block_y);
+      break;
+
+      case 't': time_output_path = optarg;
+      printf("get t, t is %s\n", time_output_path);
+      has_time_output=true;
+      break;
+
+      case 'p': plot_type = atoi(optarg);
+      plot_type=1;
+      break;
+      
       default:
         fprintf(stderr, "Usage: %s [-v:n:] [file...]\n", argv[0]);
         exit(EXIT_FAILURE);
@@ -126,7 +146,7 @@ main (int argc, char* argv[])
     }
 
   /* Open input and output files */ 
-  printf("the inputs path is: %s\n", argv[optind + 1]);
+  printf("The inputs path is: %s\n", argv[optind + 1]);
   input = fopen (argv[optind + 1], "r");
   if (input == NULL)
     {
@@ -139,7 +159,7 @@ main (int argc, char* argv[])
     output = stdout;
   else
     {
-      printf("the outputs path is: %s\n", argv[optind + 2]);
+      printf("The outputs path is: %s\n", argv[optind + 2]);
       output = fopen (argv[optind + 2], "w");
       if (output == NULL)
 	{
@@ -171,14 +191,27 @@ main (int argc, char* argv[])
   struct timeval start, end;
   gettimeofday(&start, NULL);
 
-  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max, calculation_type, num_threads, num_blocks);
+  final_board = game_of_life (outboard, inboard, nrows, ncols, gens_max, calculation_type, num_threads, num_threads_in_a_block_x, num_threads_in_a_block_y);
 
   gettimeofday(&end, NULL);
   long seconds = (end.tv_sec - start.tv_sec);
   long time_spent_in_um = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
   double time_spent = (double)time_spent_in_um / 1000000;
   printf("Time spent: %fs\n", time_spent);
-  
+  if (has_time_output) {
+
+    std::string filePath = "time_outputs/" + std::string(time_output_path);
+    std::cout << "Writing to " << filePath << std::endl;
+    std::ofstream myfile;
+    myfile.open(filePath, std::ios::app);
+    if (plot_type == 1 && (calculation_type == 3 || calculation_type == 4 || calculation_type == 5)) {
+      myfile << num_threads_in_a_block_x << "," << num_threads_in_a_block_y << "," << time_spent << std::endl;
+    } else {
+      myfile << time_spent << std::endl;
+    }
+    myfile.close();
+  }
+
 
   /* Print (or save, depending on command-line argument <outfilename>)
      the final board */

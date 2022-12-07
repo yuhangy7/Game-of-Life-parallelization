@@ -68,7 +68,7 @@ __global__ void GPUInnerLoop_v2(char *outboard, char *inboard, int nrows, int nc
   //printf("block dimision x y z is:%d\t%d\t%d\n", blockDim.x, blockDim.y, blockDim.z);
   for (int i = threadIdx.x; i < nrows; i += blockDim.x)
   {
-    for (int j = threadIdx.y; j < ncols; j+= blockDim.x)
+    for (int j = threadIdx.y; j < ncols; j+= blockDim.y)
     {
       
         //revise mod and alivep
@@ -104,11 +104,13 @@ char* cuda_v2_game_of_life (
     const int gens_max,
     const int version,
     const int num_threads,
-    const int num_blocks) 
+    const int num_threads_in_a_block_x,
+    const int num_threads_in_a_block_y) 
 {
-    const int LDA = nrows;
-    int curgen, i, j;
-    printf("current version is: %d\n", version);
+    // const int LDA = nrows;
+    // int curgen, i, j;
+    int curgen;
+    //printf("current version is: %d\n", version);
     char * d_inboard;
     char * d_outboard;
     cudaMalloc((void**)&d_inboard, sizeof(char) * nrows * ncols);
@@ -116,12 +118,13 @@ char* cuda_v2_game_of_life (
     cudaMemcpy(d_inboard, inboard, sizeof(char) * nrows * ncols, cudaMemcpyHostToDevice);
     for (curgen = 0; curgen < gens_max; curgen++)
     {
-        GPUInnerLoop_v2<<<dim3(1,1,1), dim3(32, 32,1)>>>(d_outboard, d_inboard, nrows, ncols);
+        GPUInnerLoop_v2<<<dim3(1,1,1), dim3(num_threads_in_a_block_x, num_threads_in_a_block_y,1)>>>(d_outboard, d_inboard, nrows, ncols);
         cudaDeviceSynchronize();
         SWAP_BOARDS( d_outboard, d_inboard );
     }
     cudaMemcpy(inboard, d_inboard, sizeof(char) * nrows * ncols, cudaMemcpyDeviceToHost);
-    
+    cudaFree(d_inboard);
+    cudaFree(d_outboard);
  
     
     /* 

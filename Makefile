@@ -20,7 +20,7 @@ endif
 GOL_EXE = gol
 GOL_VERIFY_EXE = gol_verify
 GOL_OBJS = gol.o life.o lifeseq.o lifepara.o load.o save.o 
-CUDA_OBJS = lifecudapara.o lifecudapara_v2.o
+CUDA_OBJS = lifecudapara.o lifecudapara_v2.o lifecudapara_v3.o 
 GOL_VERIFY_OBJS = gol.verify.o life.o lifeseq.o lifepara.o load.o save.o 
 BITBOARD_EXE = initboard
 BITBOARD_OBJS = bitboard.o random_bit.o
@@ -64,11 +64,11 @@ bitboard.o: bitboard.cpp random_bit.h
 
 random_bit.o: random_bit.cpp random_bit.h
 
-vector_add.o: vector_add.cu
-
 lifecudapara.o : lifecudapara.cu
 
 lifecudapara_v2.o : lifecudapara_v2.cu
+
+lifecudapara_v3.o : lifecudapara_v3.cu
 
 clean:
 	rm -f $(GOL_OBJS) $(GOL_VERIFY_OBJS) $(GOL_EXE) $(GOL_VERIFY_EXE) $(BITBOARD_OBJS) $(BITBOARD_EXE) 
