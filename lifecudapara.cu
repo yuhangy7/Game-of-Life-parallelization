@@ -107,9 +107,13 @@ char* cuda_v1_game_of_life (
     const int num_threads_in_a_block_x,
     const int num_threads_in_a_block_y) 
 {
-    const int LDA = nrows;
-    int curgen, i, j;
-    printf("current version is: %d\n", version);
+    // const int LDA = nrows;
+    // int curgen, i, j;
+    int curgen;
+    
+    // printf("current version is: %d\n", version);
+    
+    
     
     for (curgen = 0; curgen < gens_max; curgen++)
     {
@@ -124,7 +128,6 @@ char* cuda_v1_game_of_life (
             cudaFree(d_inboard);
             cudaFree(d_outboard);
             SWAP_BOARDS( outboard, inboard );
-
     }
     
     

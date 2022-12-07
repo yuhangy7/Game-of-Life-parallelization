@@ -35,7 +35,7 @@ parallel_game_of_life (char* outboard,
     omp_set_dynamic(0);
     omp_set_num_threads(num_threads);
     //printf("number of threads, %d\n",num_threads);
-    printf("current version is: %d\n", version);
+    //printf("current version is: %d\n", version);
     if (version == 1) {
     for (curgen = 0; curgen < gens_max; curgen++)
         {

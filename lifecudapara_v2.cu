@@ -107,9 +107,10 @@ char* cuda_v2_game_of_life (
     const int num_threads_in_a_block_x,
     const int num_threads_in_a_block_y) 
 {
-    const int LDA = nrows;
-    int curgen, i, j;
-    printf("current version is: %d\n", version);
+    // const int LDA = nrows;
+    // int curgen, i, j;
+    int curgen;
+    //printf("current version is: %d\n", version);
     char * d_inboard;
     char * d_outboard;
     cudaMalloc((void**)&d_inboard, sizeof(char) * nrows * ncols);

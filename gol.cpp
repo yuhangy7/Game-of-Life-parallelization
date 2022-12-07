@@ -17,6 +17,7 @@
 #define DO_VERIFY 0
 #endif // VERIFY_FLAG
 
+bool silent = false;
 
 static int
 to_int (int* num, const char* s)
@@ -95,7 +96,7 @@ main (int argc, char* argv[])
   int num_threads_in_a_block_y = 16;
   char *time_output_path;
   bool has_time_output = false;
-  while ((opt = getopt(argc, argv, "v:n:t:x:y:")) != -1) {
+  while ((opt = getopt(argc, argv, "v:n:t:x:y:s")) != -1) {
     switch (opt) {
       case 'v': calculation_type = atoi(optarg); 
       printf("get v\n");
@@ -114,6 +115,9 @@ main (int argc, char* argv[])
       case 't': time_output_path = optarg;
       printf("get t, t is %s", time_output_path);
       has_time_output=true;
+      break;
+
+      case 's': silent = true;
       break;
       default:
         fprintf(stderr, "Usage: %s [-v:n:] [file...]\n", argv[0]);

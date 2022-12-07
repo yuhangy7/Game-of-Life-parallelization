@@ -64,8 +64,6 @@ bitboard.o: bitboard.cpp random_bit.h
 
 random_bit.o: random_bit.cpp random_bit.h
 
-vector_add.o: vector_add.cu
-
 lifecudapara.o : lifecudapara.cu
 
 lifecudapara_v2.o : lifecudapara_v2.cu
