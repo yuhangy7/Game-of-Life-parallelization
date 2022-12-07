@@ -17,7 +17,6 @@
 #define DO_VERIFY 0
 #endif // VERIFY_FLAG
 
-bool silent = false;
 
 static int
 to_int (int* num, const char* s)
@@ -96,7 +95,8 @@ main (int argc, char* argv[])
   int num_threads_in_a_block_y = 16;
   char *time_output_path;
   bool has_time_output = false;
-  while ((opt = getopt(argc, argv, "v:n:t:x:y:s")) != -1) {
+  int plot_type = 0;
+  while ((opt = getopt(argc, argv, "v:n:t:x:y:p:")) != -1) {
     switch (opt) {
       case 'v': calculation_type = atoi(optarg); 
       break;
@@ -116,8 +116,10 @@ main (int argc, char* argv[])
       has_time_output=true;
       break;
 
-      case 's': silent = true;
+      case 'p': plot_type = atoi(optarg);
+      plot_type=1;
       break;
+      
       default:
         fprintf(stderr, "Usage: %s [-v:n:] [file...]\n", argv[0]);
         exit(EXIT_FAILURE);
@@ -197,11 +199,16 @@ main (int argc, char* argv[])
   double time_spent = (double)time_spent_in_um / 1000000;
   printf("Time spent: %fs\n", time_spent);
   if (has_time_output) {
+
     std::string filePath = "time_outputs/" + std::string(time_output_path);
     std::cout << "Writing to " << filePath << std::endl;
     std::ofstream myfile;
     myfile.open(filePath, std::ios::app);
-    myfile << time_spent << std::endl;
+    if (plot_type == 1 && (calculation_type == 3 || calculation_type == 4 || calculation_type == 5)) {
+      myfile << num_threads_in_a_block_x << "," << num_threads_in_a_block_y << "," << time_spent << std::endl;
+    } else {
+      myfile << time_spent << std::endl;
+    }
     myfile.close();
   }
 
