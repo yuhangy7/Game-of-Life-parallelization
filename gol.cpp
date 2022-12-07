@@ -99,7 +99,6 @@ main (int argc, char* argv[])
   while ((opt = getopt(argc, argv, "v:n:t:x:y:s")) != -1) {
     switch (opt) {
       case 'v': calculation_type = atoi(optarg); 
-      printf("get v\n");
       break;
       case 'n': num_threads = atoi(optarg); 
       printf("get n, n is %d\n", num_threads);
@@ -113,7 +112,7 @@ main (int argc, char* argv[])
       break;
 
       case 't': time_output_path = optarg;
-      printf("get t, t is %s", time_output_path);
+      printf("get t, t is %s\n", time_output_path);
       has_time_output=true;
       break;
 
@@ -145,7 +144,7 @@ main (int argc, char* argv[])
     }
 
   /* Open input and output files */ 
-  printf("the inputs path is: %s\n", argv[optind + 1]);
+  printf("The inputs path is: %s\n", argv[optind + 1]);
   input = fopen (argv[optind + 1], "r");
   if (input == NULL)
     {
@@ -158,7 +157,7 @@ main (int argc, char* argv[])
     output = stdout;
   else
     {
-      printf("the outputs path is: %s\n", argv[optind + 2]);
+      printf("The outputs path is: %s\n", argv[optind + 2]);
       output = fopen (argv[optind + 2], "w");
       if (output == NULL)
 	{
