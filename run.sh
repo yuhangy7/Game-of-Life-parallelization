@@ -30,6 +30,8 @@ for num in {10000..31000..3000}
 do
 ./gol "$num" inputs/1k.pbm outputs/1k.pbm -v2 -t output1ov.txt
 done
+
+
 #cuda 1
 for num in {1000..9000..1000}
 do
@@ -128,12 +130,12 @@ done
 
 #openmp number of thread
 #openmp horinzontal
-for num in {1..16}
+for num in {1..20}
 do 
 ./gol 1000 inputs/1k.pbm outputs/1k.pbm -v1 -n"$num" -t output3h.txt
 done
 #openmp vertical
-for num in {1..16}
+for num in {1..20}
 do 
 ./gol 1000 inputs/1k.pbm outputs/1k.pbm -v2 -n"$num" -t output3v.txt
 done
