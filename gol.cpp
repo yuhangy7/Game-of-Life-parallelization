@@ -14,7 +14,7 @@
 #ifdef VERIFY_FLAG
 #define DO_VERIFY 1
 #else // VERIFY_FLAG
-#define DO_VERIFY 1
+#define DO_VERIFY 0
 #endif // VERIFY_FLAG
 
 
@@ -117,7 +117,7 @@ main (int argc, char* argv[])
       break;
 
       case 'p': plot_type = atoi(optarg);
-      plot_type=1;
+      plot_type=plot_type;
       break;
       
       default:

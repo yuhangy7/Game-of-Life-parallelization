@@ -1,28 +1,33 @@
 
-# Parallelzation of Game of Life
+# Parallelization of Conway's Game of Life
+This is the parallelization of the Conway's Game of Life. OpenMP and CUDA are used for implementation of the algorithm for calculating states in the Conway's Game of Life.
 
-# Command 
+# How to Run the Program
+```
+make
 ./gol 100 inputs/1k.pbm outputs/1k.pbm -v1 -n4
+```
+Here 100 means the number of generations; the inputs/1k.pbm is the input file's path; the outputs/1k.pbm is the output file's path; the v1 means the the index of the implementation techinques; the -n4 specifies the number of threads that are going to be used.
 
-100 means number of generations
+If you want to genrate new initial boards, do this:
+```
+initboard <num_rows> <num_cols> > <generated_file_name>
+```
 
-inputs/1k.pbm input path
+# Usage Information
+```
+Usage: gol ngenerations input_path [output_path] [-v version_of_implementation] [-n nthreads] [-x x_dimension_of_CUDA_blocks] [-y y_dimension_of_CUDA_blocks] [-t time_stat_output_path] [-p plot_type]
+``` 
 
-outputs/1k.pbm output path
+# Implementation Versions
+0: the sequential version
 
--v version   0 is sequential, 1 is openmp row, 2 is openmp col, 3 is cuda
+1: OpenMP horizontal division
 
--n number threads
+2: OpenMp vertical division
 
-- initboard may appear to hang from time to time. This is because it tries to
-  get a good random seed by reading from /dev/random, which may take a long
-  time due to the lack of random information accumulated in the system (e.g.,
-  when the machine has just been rebooted). Since randomness is not the focus
-  of this homework, the program has been modified to rely on /dev/urandom (as
-  opposed to /dev/random), which is consistently fast. See random_bit.c.
+3: CUDA restrict to one block & swap data between host memory and device memory each itertation
 
-- Given N iterations at the command line, the current game_of_life routine
-  actually returns the board after N-1 iterations, even though it computes the
-  N'th iteration. In order to avoid confusing students, the routine has been
-  updated to return the correct board (i.e. after N iterations).
+4: CUDA restrict to one block
 
+5: CUDA normal
